@@ -1,17 +1,12 @@
-import { useColorScheme } from "react-native";
 import { ThemeProvider } from "styled-components";
+import ThemeFunctions from "./src/Helpers/ThemeFunctions";
 import Home from "./src/Screens/Home";
-import Themes from "./src/Themes";
 
 const App = () => {
 
-    // dark, light, null
-    const colorScheme = useColorScheme();
-    const myTheme = colorScheme !== null && colorScheme !== undefined ? Themes[colorScheme] : Themes.dark;
-
-    return(
-        <ThemeProvider theme={myTheme}>
-            <Home/>
+    return (
+        <ThemeProvider theme={ThemeFunctions.getMyTheme()}>
+            <Home />
         </ThemeProvider>
     );
 }

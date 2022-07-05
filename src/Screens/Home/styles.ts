@@ -8,5 +8,5 @@ export const Container = styled.SafeAreaView`
 `
 
 export const Text = styled.Text`
-    color: ${props => props.theme.color};
+    color: ${props => props.theme.primary};
 `
