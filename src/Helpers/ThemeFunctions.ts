@@ -1,5 +1,5 @@
 import { useColorScheme } from "react-native";
-import Themes from "../Themes";
+import Themes from "../themes";
 
 export default {
     getMyTheme: () => {
