@@ -10,5 +10,3 @@ export const Container = styled.SafeAreaView`
 export const Text = styled.Text`
     color: ${props => props.theme.primary};
 `
-
-export const Button = styled.TouchableOpacity``

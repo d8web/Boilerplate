@@ -1,43 +1,55 @@
-import { createContext, useReducer } from "react";
-import { UserType, userInitialState, userReducer } from "../reducers/userReducer";
-import { ThemeType, themeInitialState, themeReducer } from "../reducers/themeReducer";
-import { reducerActionType } from "../types/reducerActionType";
+import { ThemeProvider } from "styled-components/native";
+import React, { useEffect, useState } from "react";
+import { createContext } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import themes from "../themes";
 
-type initialStateType = {
-    user: UserType,
-    theme: ThemeType
+export enum ThemeType {
+    light = "light",
+    dark = "dark"
 }
 
-type ContextType = {
-    state: initialStateType,
-    dispatch: React.Dispatch<any>
+const ThemesObject = {
+    dark: themes.dark,
+    light: themes.light
 }
 
-const initialState: initialStateType = {
-    user: userInitialState,
-    theme: themeInitialState
-}
+export const ThemeContext = createContext({
+    theme: ThemeType.light,
+    toogleTheme: () => {},
+});
 
-export const Context = createContext<ContextType>({
-    state: initialState,
-    dispatch: () => null
-})
+export const ContextProvider: React.FC = ({ children }) => {
 
-const MainReducer = (state: initialStateType , action: reducerActionType) => ({
-    user: userReducer(state.user, action),
-    theme: themeReducer(state.theme, action)
-})
+    const [ theme, setTheme ] = useState(ThemeType.light);
 
-type Props = {
-    children: JSX.Element
-}
+    const loadTheme = async () => {
+        const savedTheme = await AsyncStorage.getItem("@theme");
+        if(savedTheme !== null) {
+            setTheme(savedTheme as ThemeType);
+        }
+    }
 
-export const ContextProvider = ({ children }: Props) => {
-    const [ state, dispatch ] = useReducer(MainReducer, initialState)
+    useEffect(() => {
+        loadTheme();
+    }, []);
 
-    return (
-        <Context.Provider value={{ state, dispatch }}>
-            {children}
-        </Context.Provider>
-    )
+    const toogleTheme = async () => {
+        let selectedTheme;
+        if(theme === ThemeType.light) {
+            selectedTheme = ThemeType.dark;
+        } else {
+            selectedTheme = ThemeType.light;
+        }
+        setTheme(selectedTheme);
+        await AsyncStorage.setItem("@theme", selectedTheme);
+    }
+
+    return(
+        <ThemeContext.Provider value={{ theme, toogleTheme }}>
+            <ThemeProvider theme={ThemesObject[theme]}>
+                {children}
+            </ThemeProvider>
+        </ThemeContext.Provider>
+    );
 }
