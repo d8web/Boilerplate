@@ -1,17 +1,36 @@
 import { useContext } from "react";
 import { Switch } from "react-native";
-import { ThemeContext, ThemeType } from "../../contexts/context";
+import { Context } from "../../contexts/context";
+// import { ThemeContext, ThemeType } from "../../contexts/context";
 import * as C from "./styles";
 
 const Preload = () => {
 
-    const { theme, toogleTheme } = useContext(ThemeContext);
+    const { state, dispatch } = useContext(Context);
 
-    const isDark = theme === ThemeType.dark ? true : false;
+    const handleSwitchTheme = () => {
+        if (state.theme.status === "light") {
+            dispatch({
+                type: "CHANGE_STATUS",
+                payload: {
+                    status: "dark"
+                }
+            })
+        } else {
+            dispatch({
+                type: "CHANGE_STATUS",
+                payload: {
+                    status: "light"
+                }
+            })
+        }
+    }
+
+    const isDark = state.theme.status === "dark" ? true : false;
 
     return (
         <C.Container>
-            <Switch value={isDark} onValueChange={toogleTheme} />
+            <Switch value={isDark} onValueChange={handleSwitchTheme} />
             <C.Text>Preload</C.Text>
         </C.Container>
     );

@@ -1,5 +1,10 @@
 import { reducerActionType } from "../types/reducerActionType";
 
+export enum ThemeTypeObj {
+    light = "light",
+    dark = "dark"
+}
+
 export type ThemeType = {
     status: "dark" | "light"
 }
