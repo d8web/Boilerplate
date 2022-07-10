@@ -5,6 +5,7 @@ import { reducerActionType } from "../types/reducerActionType";
 import { ThemeProvider } from "styled-components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import themes from "../themes";
+import { useColorScheme } from "react-native";
 
 type initialStateType = {
     user: UserType,
@@ -40,12 +41,33 @@ export const ContextProvider: React.FC = ({ children }) => {
 
     const [state, dispatch] = useReducer(MainReducer, initialState);
     const [theme, setTheme] = useState(ThemeTypeObj.light);
+    const [first, setFirst] = useState(false);
+
+    const deviceTheme = useColorScheme();
+
+    const toogleDevice = async () => {
+        if(deviceTheme !== null && deviceTheme !== undefined) {
+            if(deviceTheme === "dark") {
+                setTheme(ThemeTypeObj.dark);
+            } else {
+                setTheme(ThemeTypeObj.light);
+            }
+        }
+    }
 
     const loadTheme = async () => {
         const savedTheme = await AsyncStorage.getItem("@theme");
         if (savedTheme !== null) {
             setTheme(savedTheme as ThemeTypeObj);
+            dispatch({
+                type: "CHANGE_STATUS",
+                payload: {
+                    status: savedTheme
+                }
+            });
         }
+
+        setFirst(true);
     }
 
     const toogleTheme = async () => {
@@ -60,12 +82,20 @@ export const ContextProvider: React.FC = ({ children }) => {
     }
 
     useEffect(() => {
-        loadTheme();
-    }, []);
+        if(first) {
+            toogleTheme();
+        }
+    }, [state.theme.status]);
 
     useEffect(() => {
-        toogleTheme();
-    }, [state.theme.status]); // Corrigir função para não ser chamada a primeira vez
+        if(first) {
+            toogleDevice();
+        }
+    }, [deviceTheme]);
+
+    useEffect(() => {
+        loadTheme();
+    }, []);
 
     return (
         <Context.Provider value={{ state, dispatch }}>

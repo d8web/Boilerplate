@@ -1,7 +1,6 @@
 import { useContext } from "react";
-import { Switch } from "react-native";
 import { Context } from "../../contexts/context";
-// import { ThemeContext, ThemeType } from "../../contexts/context";
+import { Switch } from "react-native";
 import * as C from "./styles";
 
 const Preload = () => {
