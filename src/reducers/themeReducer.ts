@@ -1,8 +1,14 @@
 import { reducerActionType } from "../types/reducerActionType";
+import themes from "../themes";
 
 export enum ThemeTypeObj {
     light = "light",
     dark = "dark"
+}
+
+export const ThemesObject = {
+    dark: themes.dark,
+    light: themes.light
 }
 
 export type ThemeType = {
